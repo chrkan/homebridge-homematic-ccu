@@ -76,7 +76,7 @@ sudo npm install -g ./homebridge-homematic-ccu-0.1.0.tgz
 Directly from the repository:
 
 ```bash
-sudo npm install -g github:<your-github-user>/homebridge-homematic-ccu
+sudo npm install -g github:chrkan/homebridge-homematic-ccu
 ```
 
 Docker (`homebridge/homebridge`): put the package into the `/homebridge` volume and run `cd /homebridge && npm install ./homebridge-homematic-ccu-0.1.0.tgz` inside the container.
@@ -177,7 +177,7 @@ Also:
 | An HmIP device shows up only once although it has several channels | Only the first virtual receiver channel is added automatically; add others via `include` |
 | A variable or CUxD channel reacts with a delay | They are polled; reduce `pollInterval` |
 
-Please attach a log created with `homebridge -D` (debug), from startup until the problem occurs, when reporting bugs. Device type and channel type are shown in the log lines for newly created accessories.
+Please open an [issue](https://github.com/chrkan/homebridge-homematic-ccu/issues) and attach a log created with `homebridge -D` (debug), from startup until the problem occurs, when reporting bugs. Device type and channel type are shown in the log lines for newly created accessories.
 
 Note: log messages are currently in German.
 
