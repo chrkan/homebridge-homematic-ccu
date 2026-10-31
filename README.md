@@ -8,6 +8,8 @@ It talks to the CCU via XML-RPC and receives state changes through an event call
 > **Note on how this project came about:** The code of this plugin was written and tested entirely by **Claude** (an AI assistant by [Anthropic](https://www.anthropic.com)), commissioned and guided by the repository owner.
 > The **original idea** comes from [thkl/homebridge-homematic](https://github.com/thkl/homebridge-homematic), the long-standing Homematic plugin for Homebridge. This project is a rewrite for Homebridge v2 and **not a fork**; no code from the original project was used. See [Credits](#credits).
 
+**Homebridge v2:** This plugin is built for and works with **Homebridge v2** (tested with Homebridge 2.4.0 on Node.js 22). It uses the current Homebridge v2 / HAP-NodeJS APIs (`onGet`/`onSet` handlers, `HapStatusError`) and no deprecated calls; the test log shows no deprecation warnings. Homebridge 1.9+ is declared as supported in `engines`, but only v2 is covered by the automated test.
+
 **Status:** early version (0.1.0). The end-to-end test runs against a real Homebridge 2.x and a *simulated* CCU. The plugin has not yet been tested broadly against real hardware. Bug reports with logs are welcome.
 
 ## Contents
@@ -53,7 +55,7 @@ The plugin decides which channels to expose based on the parameter description r
 
 ## Requirements
 
-- Homebridge **1.9 or newer, including 2.x**, Node.js 20.18+, 22.10+ or 24
+- **Homebridge v2** (tested with 2.4.0); Homebridge 1.9+ is declared as supported but not covered by the tests. Node.js 20.18+, 22.10+ or 24
 - A CCU3 or OpenCCU (RaspberryMatic/CCU2 should work the same way)
 - CCU firewall (*Settings > Control panel > Security > Firewall*):
   - **Homematic XML-RPC API** set to *Full access* or *Restricted access*. With *Restricted access*, add the IP of your Homebridge host and open ports **2001** (RF) and **2010** (HmIP), plus **2000** for wired devices.

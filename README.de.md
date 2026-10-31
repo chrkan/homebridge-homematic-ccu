@@ -8,6 +8,8 @@ Die CCU wird per XML-RPC angebunden, Zustandsänderungen kommen per Event-Callba
 > **Hinweis zur Entstehung:** Der Code dieses Plugins wurde vollständig von **Claude** (KI-Assistent von [Anthropic](https://www.anthropic.com)) geschrieben und getestet, im Auftrag und unter Anleitung des Repository-Inhabers.
 > Die **Ursprungsidee** stammt von [thkl/homebridge-homematic](https://github.com/thkl/homebridge-homematic), dem langjährigen Homematic-Plugin für Homebridge. Dieses Projekt ist eine Neuentwicklung für Homebridge v2 und **kein Fork**, es wurde kein Code aus dem Originalprojekt übernommen. Siehe [Credits](#credits).
 
+**Homebridge v2:** Das Plugin ist für **Homebridge v2** gebaut und läuft damit (getestet mit Homebridge 2.4.0 auf Node.js 22). Es nutzt die aktuellen APIs von Homebridge v2 / HAP-NodeJS (`onGet`/`onSet`-Handler, `HapStatusError`) und keine veralteten Aufrufe; im Testlog gibt es keine Deprecation-Warnungen. Homebridge 1.9+ ist in den `engines` als unterstützt eingetragen, durch den automatischen Test abgedeckt ist aber nur v2.
+
 **Status:** frühe Version (0.1.0). Der Ende-zu-Ende-Test läuft gegen eine echte Homebridge 2.x und eine *simulierte* CCU. Gegen echte Hardware ist das Plugin noch nicht breit getestet. Fehlerberichte mit Log sind willkommen.
 
 ## Inhalt
@@ -53,7 +55,7 @@ Welche Kanäle eingebunden werden, entscheidet das Plugin anhand der Parameterbe
 
 ## Voraussetzungen
 
-- Homebridge **1.9 oder neuer, auch 2.x**, Node.js 20.18+, 22.10+ oder 24
+- **Homebridge v2** (getestet mit 2.4.0); Homebridge 1.9+ ist als unterstützt eingetragen, aber nicht von den Tests abgedeckt. Node.js 20.18+, 22.10+ oder 24
 - Eine CCU3 oder OpenCCU (RaspberryMatic/CCU2 sollten genauso funktionieren)
 - Firewall der CCU (*Einstellungen > Systemsteuerung > Sicherheit > Firewall*):
   - **Homematic XML-RPC API** auf *Vollzugriff* oder *Eingeschränkt*. Bei *Eingeschränkt* die IP der Homebridge eintragen und die Ports **2001** (Funk) und **2010** (HmIP) freigeben, bei Wired zusätzlich **2000**.
