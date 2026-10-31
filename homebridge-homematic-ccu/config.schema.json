@@ -1,0 +1,146 @@
+{
+  "pluginAlias": "HomematicCCU",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Anbindung einer Homematic CCU3 oder OpenCCU per XML-RPC. In der CCU-Firewall muss die Homematic XML-RPC API für diese Homebridge freigegeben sein.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "Homematic CCU",
+        "required": true
+      },
+      "ccuHost": {
+        "title": "CCU IP-Adresse oder Hostname",
+        "type": "string",
+        "required": true,
+        "placeholder": "192.168.0.100"
+      },
+      "bidcosRf": {
+        "title": "Funk (BidCos-RF, Port 2001)",
+        "type": "boolean",
+        "default": true
+      },
+      "hmipRf": {
+        "title": "HomeMatic IP (HmIP-RF, Port 2010)",
+        "type": "boolean",
+        "default": true
+      },
+      "bidcosWired": {
+        "title": "Wired (BidCos-Wired, Port 2000)",
+        "type": "boolean",
+        "default": false
+      },
+      "useReGaNames": {
+        "title": "Kanalnamen aus der CCU übernehmen (Port 8181)",
+        "type": "boolean",
+        "default": true
+      },
+      "include": {
+        "title": "Nur diese Geräte/Kanäle einbinden (leer = alle unterstützten)",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "BidCos-RF.NEQ0123456:1 oder NEQ0123456:1"
+        }
+      },
+      "exclude": {
+        "title": "Diese Geräte/Kanäle ausschließen",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "BidCos-RF.NEQ0123456:1 oder NEQ0123456:1"
+        }
+      },
+      "outlets": {
+        "title": "Schaltkanäle, die als Steckdose erscheinen sollen",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "BidCos-RF.NEQ0123456:1 oder NEQ0123456:1"
+        }
+      },
+      "lights": {
+        "title": "Schaltkanäle, die als Licht erscheinen sollen",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "BidCos-RF.NEQ0123456:1 oder NEQ0123456:1"
+        }
+      },
+      "localIp": {
+        "title": "Lokale IP von Homebridge (nur setzen, wenn die automatische Erkennung falsch liegt)",
+        "type": "string"
+      },
+      "callbackPort": {
+        "title": "Callback-Port für CCU-Events",
+        "type": "integer",
+        "default": 9190,
+        "minimum": 1024,
+        "maximum": 65535
+      },
+      "windows": {
+        "title": "Rollladen-Kanäle, die als HomeKit-Fenster erscheinen sollen",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "BidCos-RF.NEQ0123456:1 oder NEQ0123456:1"
+        }
+      },
+      "variables": {
+        "title": "Systemvariablen (Typ Logikwert) als Schalter",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "Anwesenheit_HomeKit"
+        }
+      },
+      "cuxdSwitches": {
+        "title": "CUxD-Schaltkanäle (Zugriff über ReGa, nicht XML-RPC)",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "CUxD.CUX0200001:1"
+        }
+      },
+      "pollInterval": {
+        "title": "Abfrageintervall für Variablen und CUxD in Sekunden",
+        "type": "integer",
+        "default": 10,
+        "minimum": 5,
+        "maximum": 3600
+      },
+      "serviceOverrides": {
+        "title": "Typ-Zuordnung überschreiben",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "title": "Gerätetyp:Kanaltyp",
+              "type": "string",
+              "placeholder": "HM-LC-Sw4-SM:SWITCH"
+            },
+            "kind": {
+              "title": "Verhalten",
+              "type": "string",
+              "enum": [
+                "switch",
+                "dimmer",
+                "blind",
+                "contact",
+                "thermostat"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "name",
+      "ccuHost"
+    ]
+  }
+}

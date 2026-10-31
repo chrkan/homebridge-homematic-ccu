@@ -1,0 +1,40 @@
+{
+  "displayName": "Homematic CCU",
+  "name": "homebridge-homematic-ccu",
+  "version": "0.1.0",
+  "description": "Homebridge v2 Plugin zur Anbindung einer ELV/eQ-3 Homematic CCU (CCU3, OpenCCU, RaspberryMatic) per XML-RPC mit Event-Callback.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "config.schema.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": "^20.18.0 || ^22.10.0 || ^24.0.0",
+    "homebridge": "^1.9.0 || ^2.0.0"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "homematic",
+    "homematic-ip",
+    "ccu",
+    "raspberrymatic",
+    "homekit"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node test/e2e.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "homematic-xmlrpc": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "hap-controller": "^0.10.2",
+    "homebridge": "^2.4.0",
+    "typescript": "^5.0.0"
+  }
+}
