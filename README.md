@@ -63,7 +63,42 @@ The plugin decides which channels to expose based on the parameter description r
 
 ## Installation
 
-From a release package (`.tgz`):
+### From the console (download, build, install)
+
+On the machine that runs Homebridge (Node.js 20.18+ and git required):
+
+```bash
+git clone https://github.com/chrkan/homebridge-homematic-ccu.git
+cd homebridge-homematic-ccu
+npm install
+npm run build
+npm pack
+```
+
+`npm pack` creates the package `homebridge-homematic-ccu-<version>.tgz`. Install it with one of these, depending on your setup:
+
+```bash
+# Homebridge image / hb-service (Raspberry Pi, Debian, Proxmox LXC)
+sudo hb-service add ./homebridge-homematic-ccu-*.tgz
+
+# Homebridge installed globally via npm
+sudo npm install -g ./homebridge-homematic-ccu-*.tgz
+```
+
+Without git, download and unpack the source archive instead of `git clone`:
+
+```bash
+curl -L -o homebridge-homematic-ccu.tar.gz https://github.com/chrkan/homebridge-homematic-ccu/archive/refs/heads/main.tar.gz
+tar xzf homebridge-homematic-ccu.tar.gz
+cd homebridge-homematic-ccu-main
+```
+(If the default branch is called `master`, replace `main` in both lines.) Then continue with `npm install`, `npm run build` and `npm pack` as above.
+
+Update: `git pull` in the folder, then repeat `npm install`, `npm run build`, `npm pack` and the install command. Uninstall: `sudo npm uninstall -g homebridge-homematic-ccu` (or remove the plugin in Config UI X).
+
+### From a release package (`.tgz`)
+
+If you already have the package file (for example from a GitHub release):
 
 ```bash
 # Homebridge image / hb-service
@@ -73,13 +108,13 @@ sudo hb-service add ./homebridge-homematic-ccu-0.1.0.tgz
 sudo npm install -g ./homebridge-homematic-ccu-0.1.0.tgz
 ```
 
-Directly from the repository:
+Docker (`homebridge/homebridge`): put the package into the `/homebridge` volume and run `cd /homebridge && npm install ./homebridge-homematic-ccu-0.1.0.tgz` inside the container.
+
+### Directly from GitHub
 
 ```bash
 sudo npm install -g github:chrkan/homebridge-homematic-ccu
 ```
-
-Docker (`homebridge/homebridge`): put the package into the `/homebridge` volume and run `cd /homebridge && npm install ./homebridge-homematic-ccu-0.1.0.tgz` inside the container.
 
 Then restart Homebridge and configure the plugin in Config UI X under *Plugins*.
 
@@ -192,6 +227,7 @@ Note: log messages are currently in German.
 
 ```bash
 npm install
+npm install --no-save --ignore-scripts --omit=optional hap-controller   # only needed for the tests
 npm run build
 npm test
 ```
