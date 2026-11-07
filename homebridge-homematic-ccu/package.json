@@ -9,6 +9,7 @@
     "dist",
     "config.schema.json",
     "README.md",
+    "README.de.md",
     "LICENSE"
   ],
   "engines": {
@@ -25,7 +26,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node test/e2e.js",
+    "test": "npm run build && node test/e2e.js && node test/e2e.js functions",
     "prepare": "npm run build"
   },
   "dependencies": {
@@ -33,8 +34,15 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "hap-controller": "^0.10.2",
     "homebridge": "^2.4.0",
     "typescript": "^5.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrkan/homebridge-homematic-ccu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chrkan/homebridge-homematic-ccu/issues"
+  },
+  "homepage": "https://github.com/chrkan/homebridge-homematic-ccu#readme"
 }

@@ -38,8 +38,16 @@
         "type": "boolean",
         "default": true
       },
+      "functions": {
+        "title": "Nur diese Gewerke einbinden (leer = alle Geräte; benötigt Zugriff auf die ReGa, Port 8181)",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "placeholder": "Licht"
+        }
+      },
       "include": {
-        "title": "Nur diese Geräte/Kanäle einbinden (leer = alle unterstützten)",
+        "title": "Zusätzlich/ausschließlich diese Geräte/Kanäle einbinden (mit Gewerken: zusätzlich zu den Gewerken; ohne Gewerke: nur diese; leer = alle unterstützten)",
         "type": "array",
         "items": {
           "type": "string",
