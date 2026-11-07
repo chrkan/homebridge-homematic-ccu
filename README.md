@@ -35,6 +35,7 @@ It talks to the CCU via XML-RPC and receives state changes through an event call
 - Correctly typed writes (`FLOAT` as `double`, `ENUM`/`INTEGER` as `int`, `BOOL` as `bool`), as the CCU requires
 - System variables (boolean) and CUxD channels as switches
 - `include`/`exclude` filters and mapping as outlet, light or window in Config UI X
+- Select devices by CCU trade (*Gewerk*): expose only the trades you choose and ignore everything else
 
 ## Supported devices
 
@@ -157,7 +158,8 @@ Extended example:
 | `hmipRf` | boolean | `true` | HomeMatic IP (port 2010) |
 | `bidcosWired` | boolean | `false` | Wired devices (port 2000) |
 | `useReGaNames` | boolean | `true` | Use channel names from the CCU (port 8181) |
-| `include` | list | empty | Only expose these devices/channels (empty = all supported) |
+| `functions` | list | empty | Only expose channels assigned to these trades (*Gewerke*) in the CCU; empty = no trade filter (needs port 8181) |
+| `include` | list | empty | Expose these devices/channels. Without `functions`: only these (empty = all supported). With `functions`: added on top of the trades |
 | `exclude` | list | empty | Exclude these devices/channels |
 | `outlets` | list | empty | Switch channels to expose as outlet |
 | `lights` | list | empty | Switch channels to expose as light |
@@ -172,6 +174,27 @@ Extended example:
 Addresses in the lists refer to a device (`NEQ0123456`) or a channel (`NEQ0123456:1`). An interface prefix such as `BidCos-RF.`, `HmIP-RF.` or `CUxD.` may be written in front and is ignored.
 
 If an HmIP device has several virtual receiver channels, only the first one is exposed automatically; add the others via `include`.
+
+### Selecting devices by trade (Gewerk)
+
+Use `functions` to expose only the channels that are assigned to certain **trades** (*Gewerke*) in your CCU. Everything else is ignored.
+
+```json
+{
+  "platform": "HomematicCCU",
+  "name": "Homematic CCU",
+  "ccuHost": "192.168.0.100",
+  "functions": ["Light", "Heating", "Shutters"]
+}
+```
+
+- Assign the channels to trades in the CCU WebUI (*Settings > Trades*, German: *Einstellungen > Gewerke*). The plugin then only exposes channels of the trades listed in `functions`. Names are matched case-insensitively and must be spelled like in the CCU.
+- Without `functions` (empty or not set) there is no trade filter and all supported devices are exposed.
+- `include` adds individual devices/channels on top of the selected trades, `exclude` always wins.
+- System variables (`variables`) and CUxD channels (`cuxdSwitches`) are listed explicitly and are not affected by the trade filter.
+- If a trade name is not found, the log lists the trades that exist in the CCU.
+- Reading trades needs the *Remote Homematic-Script API* (port 8181). If it cannot be read, nothing is added by trade, existing accessories are kept and the plugin tries again after 60 seconds.
+- Changing a trade assignment on the CCU does not send an event: restart Homebridge to apply it.
 
 ## Migrating from homebridge-homematic
 
@@ -211,6 +234,7 @@ Also:
 | Log shows `seit … min keine Events` (no events for … min) | Callback blocked or CCU restarted; the plugin tries to re-register |
 | Devices are named like `HmIP-… 00ABC:3` instead of their CCU name | *Remote Homematic-Script API* not enabled, or `useReGaNames` is off |
 | A device is missing | Channel type not supported, filtered by `include`/`exclude`, or no writable data point; check with the debug log (`homebridge -D`) |
+| Nothing (or too little) shows up although `functions` is set | Trade name does not match (the log lists the existing trades), channels are not assigned to the trade in the CCU, or the Remote Homematic-Script API (port 8181) is not enabled |
 | An HmIP device shows up only once although it has several channels | Only the first virtual receiver channel is added automatically; add others via `include` |
 | A variable or CUxD channel reacts with a delay | They are polled; reduce `pollInterval` |
 

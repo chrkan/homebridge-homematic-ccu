@@ -35,6 +35,7 @@ Die CCU wird per XML-RPC angebunden, Zustandsänderungen kommen per Event-Callba
 - Typrichtige Schreibzugriffe (`FLOAT` als `double`, `ENUM`/`INTEGER` als `int`, `BOOL` als `bool`), wie die CCU sie verlangt
 - Systemvariablen (Logikwerte) und CUxD-Kanäle als Schalter
 - Filter (`include`/`exclude`) und Zuordnung als Steckdose, Licht oder Fenster in der Config UI X
+- Geräteauswahl nach Gewerk der CCU: nur die gewählten Gewerke einbinden, alles andere ignorieren
 
 ## Unterstützte Geräte
 
@@ -157,7 +158,8 @@ Ausführlicheres Beispiel:
 | `hmipRf` | Boolean | `true` | HomeMatic IP (Port 2010) |
 | `bidcosWired` | Boolean | `false` | Wired-Geräte (Port 2000) |
 | `useReGaNames` | Boolean | `true` | Kanalnamen aus der CCU übernehmen (Port 8181) |
-| `include` | Liste | leer | Nur diese Geräte/Kanäle einbinden (leer = alle unterstützten) |
+| `functions` | Liste | leer | Nur Kanäle einbinden, die diesen Gewerken in der CCU zugeordnet sind; leer = kein Gewerke-Filter (benötigt Port 8181) |
+| `include` | Liste | leer | Diese Geräte/Kanäle einbinden. Ohne `functions`: nur diese (leer = alle unterstützten). Mit `functions`: zusätzlich zu den Gewerken |
 | `exclude` | Liste | leer | Diese Geräte/Kanäle ausschließen |
 | `outlets` | Liste | leer | Schaltkanäle, die als Steckdose erscheinen |
 | `lights` | Liste | leer | Schaltkanäle, die als Licht erscheinen |
@@ -172,6 +174,27 @@ Ausführlicheres Beispiel:
 Adressen in den Listen gelten für Gerät (`NEQ0123456`) oder Kanal (`NEQ0123456:1`). Ein Interface-Präfix wie `BidCos-RF.`, `HmIP-RF.` oder `CUxD.` darf davorstehen und wird ignoriert.
 
 Mehrere virtuelle Empfängerkanäle eines HmIP-Geräts: automatisch wird nur der erste eingebunden, weitere über `include`.
+
+### Geräte nach Gewerk auswählen
+
+Mit `functions` werden nur die Kanäle eingebunden, die in der CCU bestimmten **Gewerken** zugeordnet sind. Alle anderen Geräte werden ignoriert.
+
+```json
+{
+  "platform": "HomematicCCU",
+  "name": "Homematic CCU",
+  "ccuHost": "192.168.0.100",
+  "functions": ["Licht", "Heizung", "Rollläden"]
+}
+```
+
+- Ordne die Kanäle in der WebUI der CCU den Gewerken zu (*Einstellungen > Gewerke*). Das Plugin bindet dann nur Kanäle der in `functions` genannten Gewerke ein. Die Namen werden ohne Beachtung von Groß-/Kleinschreibung verglichen und müssen so geschrieben sein wie in der CCU.
+- Ohne `functions` (leer oder nicht gesetzt) gibt es keinen Gewerke-Filter, dann werden alle unterstützten Geräte eingebunden.
+- `include` fügt einzelne Geräte/Kanäle zusätzlich zu den gewählten Gewerken hinzu, `exclude` hat immer Vorrang.
+- Systemvariablen (`variables`) und CUxD-Kanäle (`cuxdSwitches`) werden einzeln aufgelistet und sind vom Gewerke-Filter nicht betroffen.
+- Wird ein Gewerk nicht gefunden, listet das Log die in der CCU vorhandenen Gewerke auf.
+- Zum Lesen der Gewerke wird die *Remote Homematic-Script API* (Port 8181) gebraucht. Lassen sie sich nicht lesen, wird nach Gewerk nichts eingebunden, vorhandene Accessories bleiben erhalten und das Plugin versucht es nach 60 Sekunden erneut.
+- Eine geänderte Gewerke-Zuordnung an der CCU löst kein Event aus: Homebridge neu starten, damit sie übernommen wird.
 
 ## Umstieg von homebridge-homematic
 
@@ -211,6 +234,7 @@ Außerdem:
 | Im Log `seit … min keine Events` | Callback blockiert oder CCU neu gestartet; das Plugin versucht die Neuanmeldung |
 | Geräte heißen `HmIP-… 00ABC:3` statt nach dem CCU-Namen | *Remote Homematic-Script API* nicht freigegeben oder `useReGaNames` aus |
 | Ein Gerät fehlt | Kanaltyp nicht unterstützt, durch `include`/`exclude` gefiltert oder kein schreibbarer Datenpunkt; mit Debug-Log (`homebridge -D`) prüfen |
+| Mit `functions` erscheint nichts (oder zu wenig) | Gewerk-Name stimmt nicht (das Log listet die vorhandenen Gewerke), Kanäle sind in der CCU nicht dem Gewerk zugeordnet oder die Remote Homematic-Script API (Port 8181) ist nicht freigegeben |
 | Ein HmIP-Gerät erscheint nur einmal, obwohl es mehrere Kanäle hat | Nur der erste virtuelle Empfängerkanal wird automatisch eingebunden, weitere über `include` |
 | Variable oder CUxD reagiert verzögert | Abfrage per Polling, `pollInterval` verkleinern |
 
